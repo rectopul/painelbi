@@ -1,0 +1,221 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FacebookProfiles {
+  id              Int               @id @default(autoincrement())
+  token           String            @unique
+  unic_code       String            @unique
+  name            String?
+  status          String?
+  BusinessAccount BusinessAccount[]
+  AdAccount       AdAccount[]
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
+
+model AdAccount {
+  id          Int              @id @default(autoincrement())
+  name        String
+  account_id  String           @unique
+  unic_code   String?          @unique
+  status      String
+  facebook_id Int
+  facebook    FacebookProfiles @relation(fields: [facebook_id], references: [id])
+  Ads         Ads[]
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+}
+
+model Ads {
+  id             Int       @id @default(autoincrement())
+  name           String
+  ad_active_time String
+  status         String
+  spend          String
+  date_start     String
+  date_stop      String
+  unic_code      String    @unique
+  AdAccount      AdAccount @relation(fields: [adAccountId], references: [id], onDelete: NoAction)
+  adAccountId    Int
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+}
+
+model BusinessAccount {
+  id               Int              @id @default(autoincrement())
+  access_token     String           @unique
+  unic_code        String           @unique
+  name             String
+  business_id      String           @unique
+  facebook_account Int
+  facebook         FacebookProfiles @relation(fields: [facebook_account], references: [id])
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+}
+
+model Campaigns {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  objective             String
+  campaign_id           String
+  status                String
+  special_ad_categories String
+  Adsets                Adsets[]
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+
+  @@map("campaigns")
+}
+
+model Adsets {
+  id           Int       @id @default(autoincrement())
+  name         String
+  Campaign     Campaigns @relation(fields: [campaign_id], references: [id])
+  campaign_id  Int
+  daily_budget String
+  start_time   String
+  end_time     String
+  targeting    String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  @@map("adsets")
+}
+
+model PlanilhaResume {
+  id               Int      @id @default(autoincrement())
+  data             String
+  data_hora        String
+  nome_status      String
+  utm_medium       String
+  status_produto   String
+  alias_produto    String
+  numero_pedido    String
+  valor_c_desconto String
+  desconto         String
+  utm_source       String
+  utm_campaign     String
+  utm_content      String
+  utm_id           String
+  utm_term         String
+  utm_rede         String
+  nome_completo    String
+  email            String
+  cpf              String
+  celular          String
+  link_whatsapp    String
+  ip               String
+  cep              String
+  rua              String
+  numero           String
+  cidade           String
+  estado           String
+  pais             String
+  cupom_desconto   String
+  qtd_parcelado    String
+  valor_parcela    String
+  numero_cartao    String
+  nome_cartao      String
+  cpf_cartao       String
+  forma_pagamento  String
+  codigo_produto   String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@map("planilha_resume")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  type          String
+  name          String?
+  user          String         @unique
+  password_hash String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  RefreshToken  RefreshToken[]
+  UserImage     UserImage?
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id          String   @id @unique @default(uuid())
+  hashedToken String
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("RefreshToken")
+}
+
+model UserImage {
+  id         String   @unique() @default(uuid())
+  name       String   @unique
+  user_id    Int      @unique
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Products {
+  id              String             @unique() @default(uuid())
+  name            String
+  price           String
+  promotion_price String?
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+  ProductsImages  ProductsImages[]
+  category        ProductsCategories @relation(fields: [category_id], references: [id])
+  category_id     String
+
+  @@map("products")
+}
+
+model ProductsImages {
+  id         String   @unique() @default(uuid())
+  name       String
+  size       Float
+  product_id Products @relation(fields: [productsId], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  productsId String
+
+  @@map("products_images")
+}
+
+model ProductsCategories {
+  id          String               @unique() @default(uuid())
+  name        String
+  description String
+  parentId    String?              @map("parent_id")
+  parent      ProductsCategories?  @relation("CategoryParent", fields: [parentId], references: [id])
+  children    ProductsCategories[] @relation("CategoryParent")
+  created_at  DateTime             @default(now())
+  updated_at  DateTime             @updatedAt
+  Products    Products[]
+  image       ImagesCategory?
+
+  @@map("products_categories")
+}
+
+model ImagesCategory {
+  id          String             @unique @default(uuid())
+  name        String
+  size        Float
+  category    ProductsCategories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category_id String             @unique
+
+  @@map("images_category")
+}
