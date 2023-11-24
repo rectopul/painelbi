@@ -1,8 +1,6 @@
 import { PlanilhasDTO } from "@/@types/types"
 import { FilterOptionsProps } from "../Types"
 
-const backURL = `http://localhost:3000`
-
 const getPlanilhaResume = async (): Promise<PlanilhasDTO[]> => {
     try {
         const options = {
@@ -11,7 +9,7 @@ const getPlanilhaResume = async (): Promise<PlanilhasDTO[]> => {
                 'Content-Type': 'application/json'
             }
         }
-        const req = await fetch(`${backURL}/planilha`, options)
+        const req = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL}/planilha`, options)
 
         const res = await req.json()
 
@@ -31,7 +29,7 @@ const getPlanilhaResume = async (): Promise<PlanilhasDTO[]> => {
 const filterOrders = async ({ filter }: FilterOptionsProps): Promise<PlanilhasDTO[]> => {
     try {
 
-        const url = new URL(`${backURL}/planilha`)
+        const url = new URL(`${process.env.NEXT_PUBLIC_BACK_URL}/planilha`)
 
         if(filter.date) url.searchParams.append('date', filter.date)
         if(filter.nome_status) url.searchParams.append('status', filter.nome_status)
