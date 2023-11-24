@@ -33,7 +33,7 @@ const createFacebookAccounts = async (data: CreateFaceAccountTDO): Promise<Faceb
 
 const getFacebookPagesList = async (): Promise<FacebookPagesPayload[]> => {
     try {
-        const url = new URL(`http://localhost:3000/facebook/pages`)
+        const url = new URL(`${process.env.NEXT_PUBLIC_BACK_URL}/facebook/pages`)
         const req = await fetch(url)
 
         if(!req.ok) {
