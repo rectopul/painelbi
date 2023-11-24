@@ -13,7 +13,7 @@ export function FacebookPageItem({ account }: FacebookPageItemProps) {
     return (
         <>
             {account.pages.data.map(p => (
-                <tbody className="border-b border-slate-200 text-[0.875rem] hover:bg-grayLight-200 cursor-pointer">
+                <tbody key={p.id} className="border-b border-slate-200 text-[0.875rem] hover:bg-grayLight-200 cursor-pointer">
                     <tr>
                         <td className="px-2 py-3">
                             <span className="px-2 text-indigo-400">{p.id}</span>
