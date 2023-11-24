@@ -44,6 +44,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
     IP: 24.199.82.40
     user: root
     senha: 148424#DroneLoko
+    userftp
 }
 ```
 

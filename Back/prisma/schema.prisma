@@ -91,6 +91,15 @@ model Adsets {
   @@map("adsets")
 }
 
+model CommentsOcult {
+  id         Int      @id @default(autoincrement())
+  word       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("comments_ocult")
+}
+
 model PlanilhaResume {
   id               Int      @id @default(autoincrement())
   data             String

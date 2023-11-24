@@ -1,4 +1,5 @@
-import { AdAccountsStatusDTO, CreateFaceAccountTDO, FacebookAccountsPayloadDTO, FacebookProfileComplete } from "@/@types/types"
+import { FacebookPagesPayload } from "@/@types/facebook"
+import { AdAccountsStatusDTO, CreateFaceAccountTDO, ErrorType, FacebookAccountsPayloadDTO, FacebookProfileComplete } from "@/@types/types"
 
 const createFacebookAccounts = async (data: CreateFaceAccountTDO): Promise<FacebookAccountsPayloadDTO> => {
     try {
@@ -25,6 +26,25 @@ const createFacebookAccounts = async (data: CreateFaceAccountTDO): Promise<Faceb
         const res: FacebookAccountsPayloadDTO = await req.json()
         return res
 
+    } catch (error) {
+        throw error
+    }
+}
+
+const getFacebookPagesList = async (): Promise<FacebookPagesPayload[]> => {
+    try {
+        const url = new URL(`http://localhost:3000/facebook/pages`)
+        const req = await fetch(url)
+
+        if(!req.ok) {
+            const dataError: ErrorType = await req.json()
+
+            throw new Error(dataError.message)
+        }
+
+        const res: FacebookPagesPayload[] = await req.json()
+
+        return res
     } catch (error) {
         throw error
     }
@@ -88,4 +108,4 @@ const getAllFacebookAccounts = async (): Promise<FacebookProfileComplete[]> => {
     }
 }
 
-export { createFacebookAccounts, updateFacebookAdAccounts, getAllFacebookAccounts }
+export { createFacebookAccounts, updateFacebookAdAccounts, getAllFacebookAccounts, getFacebookPagesList }

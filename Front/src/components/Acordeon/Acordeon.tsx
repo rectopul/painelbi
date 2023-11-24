@@ -21,7 +21,8 @@ const pedidosItems = [
 ]
 
 const facebookItems = [
-    {link: `/facebook`, title: `Lista`}
+    {link: `/facebook`, title: `Lista`},
+    {link: `/facebook/comments`, title: `Comentários`}
 ]
 
 const AsanaItems = [

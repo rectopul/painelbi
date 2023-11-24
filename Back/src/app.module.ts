@@ -21,6 +21,8 @@ import { DashboardController } from './dashboard/dashboard.controller';
 import { PlanilhaModule } from './planilha/planilha.module';
 import { CronjobsModule } from './cronjobs/cronjobs.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { FacebookModule } from './facebook/facebook.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -39,7 +41,9 @@ import { CampaignModule } from './campaign/campaign.module';
     TokenModule,
     PlanilhaModule,
     CronjobsModule,
-    CampaignModule
+    CampaignModule,
+    FacebookModule,
+    CommentsModule
   ],
   controllers: [AppController, LoginController, CategoryController],
   providers: [AppService, UserByToken, PrismaService, CategoryService, ImagesCategoryService, JwtService],
