@@ -5,6 +5,7 @@ import { Plus, X } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FormAdset } from "./FormAdset";
+import { useFaceInfos } from "@/providers/FacebookProvider";
 
 const objectiveOptions: string[] = [
     'OUTCOME_LEADS',
@@ -28,11 +29,14 @@ export function FormCampaign() {
     const [campaign, setCampaign] = useState<CreateCampaignsPayload | null>(null)
     const [showForm, setShowForm] = useState<boolean>(false)
 
+    const { facebookAccounts } = useFaceInfos()
+
     const onSubmit: SubmitHandler<CreateCampaignsDTO> = async data => {
         try {
             const campaign = await createCampaignAPI({data}) 
 
             setCampaign(campaign)
+            setShowForm(false)
         } catch (error) {
            console.log(error) 
         }
@@ -62,6 +66,7 @@ export function FormCampaign() {
                     </Alert>
                 )}
             </div>
+
             <div 
                 data-show={showForm}
                 className="w-full data-[show=true]:translate-y-0 z-50 duration-500 transition-all translate-y-[-500px] md:max-w-[700px] fixed left-[50%] top-32 translate-x-[-50%] flex flex-col bg-white rounded-lg border border-slate-200 py-5 px-4">
@@ -76,6 +81,21 @@ export function FormCampaign() {
 
                 <div className="w-full">
                     <form className="flex flex-col w-full mt-10" onSubmit={handleSubmit(onSubmit)}>
+                        <span className="flex flex-col mb-4">
+                            <label className="text-sm font-medium text-slate-800">Conta do facebook</label>
+                            <select 
+                                {...register('facebook_account', {required: true})}
+                                placeholder="Selecione uma conta"
+                                className="px-3 py-2 data-[error=true]:border-red-400 outline-none rounded border-slate-200 border leading-5"
+                            >
+                                <option value="" disabled>Selecione uma conta</option>
+                                
+                                {facebookAccounts && facebookAccounts.map(a => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                ))}
+                            </select>
+                        </span>
+
                         <span className="flex flex-col">
                             <label className="text-sm font-medium text-slate-800">Nome da campanha</label>
                             <input 

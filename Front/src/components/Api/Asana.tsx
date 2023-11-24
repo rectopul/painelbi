@@ -44,9 +44,16 @@ const getSection = async ({ section, url }: GetSectionProps): Promise<TaskListMa
         const req = await fetch(url || `https://app.asana.com/api/1.0/sections/${section}/tasks?limit=100`, options)
 
         if(!req.ok) {
+            console.log(`tem erros no asana`)
             const dataError: ErrorType = await req.json()
 
-            throw new Error(dataError.message)
+            if(dataError.errors) {
+                
+                throw new Error(dataError.errors[0].message)
+            }else{
+                throw new Error(dataError.message)
+            }
+            
         }
 
         const res: TaskListMain = await req.json()

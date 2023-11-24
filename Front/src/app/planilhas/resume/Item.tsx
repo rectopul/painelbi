@@ -1,5 +1,5 @@
 import { PlanilhasDTO } from "@/@types/types"
-import { ChevronDown, Copy, Eye, Trash2 } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 
 interface PlanilhaResumeItemProps {

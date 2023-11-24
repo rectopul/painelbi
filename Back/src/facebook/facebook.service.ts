@@ -91,7 +91,6 @@ export class FacebookService {
 
                   const postList: FacePostsList = await req.json()
 
-                  console.log(`posts coletados`, postList)
                   return { posts: postList, ...page }
 
                 } catch (error) {
@@ -119,17 +118,5 @@ export class FacebookService {
     } catch (error) {
       throw new Error(error?.message || error?.error)
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} facebook`;
-  }
-
-  update(id: number, updateFacebookDto: UpdateFacebookDto) {
-    return `This action updates a #${id} facebook`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} facebook`;
   }
 }

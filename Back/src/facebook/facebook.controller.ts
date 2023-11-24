@@ -29,19 +29,4 @@ export class FacebookController {
       throw new HttpException(error?.message, HttpStatus.BAD_REQUEST)
     }
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.facebookService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFacebookDto: UpdateFacebookDto) {
-    return this.facebookService.update(+id, updateFacebookDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.facebookService.remove(+id);
-  }
 }

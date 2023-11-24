@@ -20,6 +20,7 @@ model FacebookProfiles {
   AdAccount       AdAccount[]
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
+  Campaigns       Campaigns[]
 }
 
 model AdAccount {
@@ -63,15 +64,17 @@ model BusinessAccount {
 }
 
 model Campaigns {
-  id                    Int      @id @default(autoincrement())
+  id                    Int              @id @default(autoincrement())
   name                  String
+  facebook_profile      FacebookProfiles @relation(fields: [facebook_profile_id], references: [id])
   objective             String
   campaign_id           String
   status                String
   special_ad_categories String
   Adsets                Adsets[]
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
+  created_at            DateTime         @default(now())
+  updated_at            DateTime         @updatedAt
+  facebook_profile_id   Int
 
   @@map("campaigns")
 }

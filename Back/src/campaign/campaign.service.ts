@@ -16,7 +16,11 @@ export class CampaignService {
   async create(createCampaignDto: CreateCampaignDto): Promise<CampaignPayloadDTO> {
     try {
       //console.log(`dados recebidos`, createCampaignDto)
-      const url = `https://graph.facebook.com/v18.0/act_${process.env.FACE_ACCOUNT_ID}/campaigns?access_token=${process.env.FACE_TOKEN}`
+      const facebookProfile = await this.prisma.facebookProfiles.findFirst({ where: { id: +createCampaignDto.facebook_account } })
+
+      if (!facebookProfile) throw new Error(`Conta de facebook não existe`)
+
+      const url = `https://graph.facebook.com/v18.0/act_${process.env.FACE_ACCOUNT_ID}/campaigns?access_token=${facebookProfile.token}`
 
       const options = {
         method: 'POST',
@@ -40,7 +44,8 @@ export class CampaignService {
         objective: createCampaignDto.objective,
         status: createCampaignDto.status,
         special_ad_categories: createCampaignDto.special_ad_categories,
-        campaign_id: res.id
+        campaign_id: res.id,
+        facebook_profile_id: facebookProfile.id
       }
 
       const campaign = await this.prisma.campaigns.create({
@@ -179,6 +184,8 @@ export class CampaignService {
 
       const res: FacebookAccountsPayloadDTO = await req.json()
 
+      console.log(`resposta do face: `, res)
+
       const reqStatus = await fetch(`https://graph.facebook.com/v18.0/me/adaccounts?access_token=${data.token}&fields=account_status,name`)
 
       if (!reqStatus.ok) {
@@ -186,9 +193,11 @@ export class CampaignService {
         throw new Error(resStatus)
       }
 
+
+
       const resStatus: AdAccountsStatusListDTO = await reqStatus.json()
 
-      if (res.accounts.data && resStatus.data.length) {
+      if (res && resStatus.data.length) {
         const checkExists = await this.prisma.facebookProfiles.findFirst({ where: { token: data.token } })
 
         if (checkExists) throw new Error(`Token já cadastrado, informe um novo token`)
@@ -230,21 +239,17 @@ export class CampaignService {
         }
 
 
-        if (faceAccounts.id) {
-          await this.prisma.businessAccount.create({
-            data: {
-              access_token: res.accounts.data[0].access_token,
-              business_id: res.accounts.data[0].id,
-              unic_code: data.unic_code,
-              facebook_account: faceAccounts.id,
-              name: res.accounts.data[0].name
-            }
-          })
-
-          // if (business.id) {
-          //   return { business: business, ...faceAccounts }
-          // }
-        }
+        // if (faceAccounts.id) {
+        //   await this.prisma.businessAccount.create({
+        //     data: {
+        //       access_token: data.token,
+        //       business_id: res.accounts.data[0].id,
+        //       unic_code: data.unic_code,
+        //       facebook_account: faceAccounts.id,
+        //       name: res.accounts.data[0].name
+        //     }
+        //   })
+        // }
 
         const resAccounts = await this.prisma.facebookProfiles.findFirst({ where: { id: faceAccounts.id }, include: { AdAccount: true, BusinessAccount: true } })
 
@@ -254,6 +259,7 @@ export class CampaignService {
       console.log(res)
       throw new Error(`Erro ao criar contas ${JSON.stringify(res)}`)
     } catch (error) {
+      console.log(error)
       if (error.name && error.name == `PrismaClientKnownRequestError`) {
         if (error.code && error.code == `P2002`) {
           throw new Error(`Você está tentando enviar atualizar um dado que não pode ser repetido`)

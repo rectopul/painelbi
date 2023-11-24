@@ -106,6 +106,7 @@ export interface AudiencePayload {
 
 export interface CreateCampaignsDTO {
     name: string
+    facebook_account: number
     objective: string
     status: string
     special_ad_categories: string

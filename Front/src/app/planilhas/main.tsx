@@ -31,12 +31,14 @@ export function MainPlanilhas() {
     }, [resume]);
 
     return (
-        <div className="w-full mt-60 md:w-[1200px] mx-auto md:mt-28 bg-white border-slate-200 border">
-            <header className="p-4">
-                <h1 className="font-semibold text-slate-700">Planilha de resumo <span className="text-gray-300">{resume?.length}</span></h1>
-            </header>
-            {dados && (<PlanilhaDetail handleCloseDetail={() => setResumeOpen(false)} open={resumeOpen} dados={dados} />)}
-            {resume && (<PlanilhaResumeList onClickResume={handleOpenResume} resume={resume} />)}
+        <div className="w-full md:w-[calc(100%-300px)] ml-auto p-2 md:p-5">
+            <div className="w-full mt-60 md:mt-28 shadow-lg">
+                <header className="p-4 bg-white border border-b-0 border-slate-200">
+                    <h1 className="font-semibold text-slate-700">Planilha de resumo <span className="text-gray-300">{resume?.length}</span></h1>
+                </header>
+                {dados && (<PlanilhaDetail handleCloseDetail={() => setResumeOpen(false)} open={resumeOpen} dados={dados} />)}
+                {resume && (<PlanilhaResumeList onClickResume={handleOpenResume} resume={resume} />)}
+            </div>
         </div>
     )
 }

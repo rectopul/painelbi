@@ -3,16 +3,32 @@ import { taskList } from "@/components/Api/Asana"
 import { Loader } from "@/components/Loader"
 import { useEffect, useState } from "react"
 import { AsanaTaskItem } from "./TaskItem"
+import { Alert } from "evergreen-ui"
+import { TableContainer } from "@/components/Table/TableContainer"
+import { TableHead } from "@/components/Table/TableHead"
+import { TableCell } from "@/components/Table/TableCell"
 
 export function AsanaTaskList() {
     const [asanaTasks, setAsanaTasks] = useState<ResponseTask[] | null>(null)
+    const [hasError, setHasError] = useState<string | null>(null)
 
     const handleGetTasks = async () => {
         try {
             const list = await taskList()
             setAsanaTasks(list)
         } catch (error) {
-            console.log(`erro ao pegar tasks do asana: `, error)
+            if (error instanceof Error) {
+                setHasError(`Erro ao pegar tasks do asana`);
+
+                setTimeout(() => {
+                    setHasError(null);
+                }, 5000);
+            } else {
+                // Tratar o erro de outra forma
+                console.log(error)
+            }
+            
+            console.log(`erro ao pegar tasks do asana: `)
         }
     }
 
@@ -21,39 +37,23 @@ export function AsanaTaskList() {
     }, [])
 
     return (
-        <div className="w-full mt-10 md:w-[calc(100%-350px)] mx-auto md:ml-auto md:mx-0 pb-20">
-            <div className="w-[90%] mx-auto bg-white border border-slate-200">
-                {!asanaTasks ? (<Loader />) : (
-                    <>
-                        <table className="w-full table-auto text-xs">
-                            <thead className="text-slate-500 dark:text-slate-400 border-b border-slate-200 uppercase font-[0.75rem] bg-grayLight-200">
-                            <tr>
-                                <th className="pl-4 pr-2 py-3 text-left">
-                                    <span>
-                                        ID
-                                    </span>
-                                </th>
+        <>
+            {hasError && (
+                <div className="fixed w-full md:w-[400px] left-[50%] translate-x-[-50%] bottom-0 md:bottom-5">
+                    <Alert title="Erro ao listar Asana" intent="warning" >
+                        {hasError}
+                    </Alert>
+                </div>
+            )}
+            <TableContainer>
+                <TableHead>
+                    <TableCell>ID</TableCell>
+                    <TableCell>NOME</TableCell>
+                    <TableCell>Registros</TableCell>
+                </TableHead>
 
-                                <th className="pl-4 pr-2 py-3 text-left">
-                                    <span>
-                                        NOME
-                                    </span>
-                                </th>
-
-                                <th className="px-2 py-3 text-left">
-                                    <span>
-                                        Registros
-                                    </span>
-                                </th>
-                            </tr>
-                            </thead>
-
-                            {asanaTasks.map((r, k) => (<AsanaTaskItem data={r} key={k} />))}
-                            
-                        </table>
-                    </>
-                )}
-            </div>
-        </div>
+                {!asanaTasks ? (<Loader />) : asanaTasks.map((r, k) => (<AsanaTaskItem data={r} key={k} />))}
+            </TableContainer>
+        </>
     )
 }

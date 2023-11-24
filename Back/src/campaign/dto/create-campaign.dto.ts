@@ -1,6 +1,7 @@
 import { Campaigns } from "@prisma/client"
 
 export class CreateCampaignDto {
+    facebook_account: number
     name: string
     objective: string
     status: string

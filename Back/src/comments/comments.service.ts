@@ -34,15 +34,43 @@ export class CommentsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: number): Promise<CommentsOcult> {
+    try {
+      const comment = await this.prisma.commentsOcult.findFirst({ where: { id } })
+
+      if (!comment) throw new Error(`Comentário não disponível`)
+
+      return comment
+    } catch (error) {
+      throw new Error(error?.message || error?.error)
+    }
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(id: number, updateCommentDto: UpdateCommentDto): Promise<CommentsOcult> {
+    try {
+      const comment = await this.prisma.commentsOcult.findFirst({ where: { id } })
+
+      if (!comment) throw new Error(`Comentário não disponível`)
+
+      const newComment = await this.prisma.commentsOcult.update({ data: updateCommentDto, where: { id } })
+
+      return newComment
+    } catch (error) {
+      throw new Error(error?.message || error?.error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: number): Promise<boolean> {
+    try {
+      const comment = await this.prisma.commentsOcult.findFirst({ where: { id } })
+
+      if (!comment) throw new Error(`Comentário não disponível`)
+
+      await this.prisma.commentsOcult.delete({ where: { id } })
+
+      return true
+    } catch (error) {
+      throw new Error(error?.message || error?.error)
+    }
   }
 }

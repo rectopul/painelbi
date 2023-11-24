@@ -175,6 +175,12 @@ export interface Ad {
     adAccountId:    number;
 }
 
+export interface ErrorsMessage {
+    message: string
+    help: string
+}
+
 export interface ErrorType {
+    errors?: ErrorsMessage[]
     message: string
 }
