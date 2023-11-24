@@ -25,7 +25,7 @@ const specialAdCategory: string[] = [
 
 export function FormCampaign() {
     const { register, handleSubmit, watch, formState: { errors }, getValues } = useForm<CreateCampaignsDTO>()
-    const [campaign, setCampaign] = useState<CreateCampaignsPayload | number>(2)
+    const [campaign, setCampaign] = useState<CreateCampaignsPayload | null>(null)
     const [showForm, setShowForm] = useState<boolean>(false)
 
     const onSubmit: SubmitHandler<CreateCampaignsDTO> = async data => {
@@ -40,7 +40,7 @@ export function FormCampaign() {
 
     return (
         <>
-            {campaign && <FormAdset campaign_id={`teste`} />}
+            {campaign && <FormAdset campaign_id={campaign.id} />}
             <div className="w-full md:w-[1200px] mx-auto md:mt-24 mt-3 flex justify-between items-center">
                 <h1 className="text-xl text-slate-800 font-medium">Campanhas</h1>
                 <button 

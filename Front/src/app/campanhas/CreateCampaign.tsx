@@ -5,7 +5,6 @@ export function CreateCampaign() {
     return (
         <>
             <FormCampaign />
-            
         </>
     )
 }
