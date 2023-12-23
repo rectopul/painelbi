@@ -34,3 +34,7 @@ sudo ufw allow 21/tcp
 sudo ufw reload
 
 echo "Configuração concluída. O usuário FTP '$ftp_user' foi criado e pode acessar todas as pastas."
+
+
+userftp2
+userpassftp2

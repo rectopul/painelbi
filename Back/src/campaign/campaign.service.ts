@@ -97,8 +97,7 @@ export class CampaignService {
             if (ad.ads) {
               const { account_status, balance, name, id, amount_spent } = ad
               const data = ad.ads.data.map(a => {
-
-                if (a.insights.data.length) {
+                if (a.insights && a.insights.data.length) {
                   const { name, status, effective_status, id } = a
                   const { date_start, date_stop, spend } = a.insights.data[0]
 
@@ -130,22 +129,24 @@ export class CampaignService {
           if (cleans.length) {
             for (const ads of cleans) {
               for (const adItem of ads.ads) {
-                const adsExists = await this.prisma.ads.findFirst({ where: { unic_code: adItem.ad_id } })
+                if (adItem) {
+                  const adsExists = await this.prisma.ads.findFirst({ where: { unic_code: adItem.ad_id } })
 
-                if (!adsExists) {
+                  if (!adsExists) {
 
-                  await this.prisma.ads.create({
-                    data: {
-                      date_start: adItem.date_start,
-                      date_stop: adItem.date_stop,
-                      name: adItem.name,
-                      status: adItem.status,
-                      adAccountId: adAccount.id,
-                      ad_active_time: "0",
-                      spend: adItem.spend,
-                      unic_code: adItem.ad_id
-                    }
-                  })
+                    await this.prisma.ads.create({
+                      data: {
+                        date_start: adItem.date_start,
+                        date_stop: adItem.date_stop,
+                        name: adItem.name,
+                        status: adItem.status,
+                        adAccountId: adAccount.id,
+                        ad_active_time: "0",
+                        spend: adItem.spend,
+                        unic_code: adItem.ad_id
+                      }
+                    })
+                  }
                 }
               }
             }
@@ -159,6 +160,7 @@ export class CampaignService {
 
       return getData
     } catch (error) {
+      console.log(error)
       // if (error.name && error.name == `PrismaClientKnownRequestError`) {
       //   if (error.code && error.code == `P2002`) {
       //     throw new Error(`Você está tentando enviar atualizar um dado que não pode ser repetido`)

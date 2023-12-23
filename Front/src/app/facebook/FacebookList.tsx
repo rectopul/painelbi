@@ -15,11 +15,15 @@ export function FacebookList() {
     const { facebookAccounts, error } = useFaceInfos()
 
     return (
-        <div className="w-full flex flex-wrap items-center mt-7">
+        <div className="w-full flex flex-wrap mt-7">
             {error && (
                 <div className="bg-red-400 border border-red-500 rounded flex justify-center items-center leading-5 px-3 py-2 text-white font-medium text-sm">{error}</div>
             )}
-            {facebookAccounts && facebookAccounts?.map(a => (<FacebookItem key={a.id} data={a} />))}
+            {facebookAccounts && facebookAccounts?.map(a => {
+                if(a.AdAccount.length) {
+                    a.AdAccount.map(ac => ac.Ads.length > 0 && (<FacebookItem key={a.id} data={a} />))
+                }
+            })}
             
         </div>
     )
